@@ -1,0 +1,5 @@
+public class Medico extends Empleado {
+
+    public Medico(String id, String nombre) {
+        super(id, nombre);
+    }}
