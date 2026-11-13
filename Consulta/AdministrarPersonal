@@ -1,0 +1,8 @@
+import java.util.*;
+
+public class AdministrarPersonal {
+    public void registrarEmpleado(Empleado e) { /* TODO */ }
+    public void eliminarMedico(String id) { /* TODO */ }
+    public List<Medico> buscarPorEspecialidad(Especialidad esp) { /* TODO */ return null; }
+    public List<Medico> medicosDisponibles() { /* TODO */ return null; }
+}
