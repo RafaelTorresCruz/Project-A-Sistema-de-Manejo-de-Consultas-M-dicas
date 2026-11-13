@@ -1,5 +1,16 @@
 public class Medico extends Empleado {
 
-    public Medico(String id, String nombre) {
+    private Especialidad especialidad;
+
+
+
+    public Medico(String id, String nombre, Especialidad especialidad) {
         super(id, nombre);
-    }}
+        this.especialidad = especialidad; 
+
+
+    }
+
+    public Especialidad getEspecialidad() { return especialidad; }
+
+}
