@@ -1,0 +1,12 @@
+import java.util.*;
+
+public class AdministrarCitas {         
+    public void crearCita(Cita c) { /* TODO */ }
+    public void cancelarCita(String id) { /* TODO */ }
+    public void registrarVisita(Visita v) { /* TODO */ }
+    public List<Cita> citasDeHoy() { /* TODO */ return null; }
+
+
+
+    
+}

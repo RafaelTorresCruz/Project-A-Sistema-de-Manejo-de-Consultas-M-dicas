@@ -1,0 +1,19 @@
+public class ConsultaMedica {
+
+
+    private AdministrarPersonal personal = new AdministrarPersonal();
+    private AdministrarPacientes pacientes = new AdministrarPacientes();
+    private AdministrarCitas citas = new AdministrarCitas();
+
+
+
+    public void asignarPaciente() { /* TODO */ }
+    public void marcarPacienteAtendido(Visita v) { /* TODO */ }
+
+
+    public AdministrarPersonal getPersonal() { return personal; }
+    public AdministrarPacientes getPacientes() { return pacientes; }
+    public AdministrarCitas getCitas() { return citas; }
+
+
+}
