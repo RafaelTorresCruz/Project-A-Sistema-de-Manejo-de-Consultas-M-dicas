@@ -1,0 +1,13 @@
+import java.time.*;
+
+public class Visita {
+
+    private Cita cita;
+    
+     public Visita(Cita cita){
+        this.cita = cita;
+     }
+
+     
+     public Cita getCita() { return cita; }
+}
