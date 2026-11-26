@@ -1,7 +1,0 @@
-public class Cita {
-    private String id;
-    private Paciente paciente;    
-    private Medico medico;
-
-
-}

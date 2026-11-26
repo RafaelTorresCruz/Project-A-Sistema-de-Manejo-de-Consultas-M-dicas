@@ -1,8 +1,0 @@
-public abstract class Empleado extends Persona {
-
-    public Empleado(String id, String nombre) {
-        super(id, nombre);
-    }
-
-
-}

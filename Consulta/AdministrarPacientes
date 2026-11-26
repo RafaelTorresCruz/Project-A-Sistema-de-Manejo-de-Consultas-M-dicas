@@ -1,8 +1,0 @@
-import java.util.*;
-
-public class AdministrarPacientes {
-    public void registrarPaciente(Paciente p) { /* TODO */ }
-    public void anadirAFila(Paciente p) { /* TODO */ }
-    public Paciente siguienteEnFila() { /* TODO */ return null; }
-    public List<Paciente> pacientesEnEspera() { /* TODO */ return null; }
-}
