@@ -34,22 +34,30 @@ public class Main {
             int opcion = leerEntero("Opción: ");
 
             try {
-                if (opcion == 1) {
-                    registrarPaciente();
-                } else if (opcion == 2) {
-                    atenderSiguiente();
-                } else if (opcion == 3) {
-                    mostrarPacientesEnEspera();
-                } else if (opcion == 4) {
-                    mostrarHistorial();
-                } else if (opcion == 5) {
-                    crearCita();
-                } else if (opcion == 6) {
-                    mostrarCitasDeHoy();
-                } else if (opcion == 0) {
-                    continuar = false;
-                } else {
-                    System.out.println("Opción no válida.");
+                switch(opcion) {
+                    case 1:
+                        registrarPaciente();
+                        break;
+                    case 2:
+                        atenderSiguiente();
+                        break;
+                    case 3:
+                        mostrarPacientesEnEspera();
+                        break;
+                    case 4:
+                        mostrarHistorial();
+                        break;
+                    case 5:
+                        crearCita();
+                        break;
+                    case 6:
+                        mostrarCitasDeHoy();
+                        break;
+                    case 0:
+                        continuar = false;
+                        break;
+                    default:
+                        System.out.println("Opción no válida.");
                 }
             } catch (IllegalArgumentException e) {
                 System.out.println("No se pudo completar: " + e.getMessage());
