@@ -5,11 +5,12 @@ public class Medico extends Empleado {
 
 
 
-    public Medico(String id, String nombre, Especialidad especialidad) {
-        super(id, nombre);
+    public Medico(String id, String nombre, String password, Especialidad especialidad) {
+        super(id, nombre, password);
         this.especialidad = especialidad; 
         this.disponible = true;
 
+        empleo = Empleo.MEDICO;
 
     }
 

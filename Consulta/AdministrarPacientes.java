@@ -18,11 +18,25 @@ public class AdministrarPacientes {
         if (paciente == null) {
             throw new IllegalArgumentException("El paciente no puede estar vacío.");
         }
+        if (paciente.getId().equals("N/A")) {
+            paciente.setId(generateNextID());
+        }
         // El ID identifica al paciente y evita guardar el mismo registro dos veces.
         if (pacientes.containsKey(paciente.getId())) {
             throw new IllegalArgumentException("Ya existe un paciente con ese ID.");
         }
         pacientes.put(paciente.getId(), paciente);
+    }
+
+    public String generateNextID() {
+        String nuevoID = String.format("%06d",pacientes.size());
+        return nuevoID;
+    }
+
+    public void registrarPacientes(ArrayList<Paciente> pacientes) {
+        for (Paciente paciente : pacientes) {
+            registrarPaciente(paciente);
+        }
     }
 
     public void anadirAFila(Paciente paciente) {

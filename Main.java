@@ -1,4 +1,5 @@
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -9,6 +10,23 @@ public class Main {
     public static void main(String[] args) {
         //esto es solo un medico pa ejemplo para poder probar la atencion
         cargarDatosIniciales();
+        boolean aceptado = false;
+        while (!aceptado) {
+            String ID = leerTexto("ID de Empleado: ");
+            Empleado empleado = buscarEmpleadoPorID(ID);
+
+            if (empleado != null) {
+                String password = leerTexto("Contraseña: ");
+                if (password.equals(empleado.password)) {
+                    aceptado = true;
+                    System.out.println("Bienvendos %s!".formatted(empleado.getNombre()));
+                }
+                else {
+                    System.out.println("Contraseña Incorrecta. Saliendo...");
+                }
+            }
+        }
+
         boolean continuar = true;
 
         while (continuar) {
@@ -42,26 +60,40 @@ public class Main {
 
     private static void mostrarMenu() {
         System.out.println("\n=== Sistema de Consultas Médicas ===");
-        System.out.println("1 Registrar paciente y ponerlo en espera");
-        System.out.println("2 Atender siguiente paciente");
-        System.out.println("3 Ver pacientes en espera");
-        System.out.println("4 Ver historial de paciente");
-        System.out.println("5 Crear cita para hoy");
-        System.out.println("6 Ver citas de hoy");
-        System.out.println("0 Salir");
+        System.out.println("1. Registrar paciente y ponerlo en espera");
+        System.out.println("2. Atender siguiente paciente");
+        System.out.println("3. Ver pacientes en espera");
+        System.out.println("4. Ver historial de paciente");
+        System.out.println("5. Crear cita para hoy");
+        System.out.println("6. Ver citas de hoy");
+        System.out.println("0. Salir");
+    }
+
+    private static Empleado buscarEmpleadoPorID(String ID) {
+        return consulta.getPersonal().buscarPorID(ID);
     }
 
     private static void cargarDatosIniciales() {
-        Medico medicoUno = new Medico("M1", "Dra. Rivera", Especialidad.OFTALMOLOGIA_GENERAL);
-        Medico medicoDos = new Medico("M2", "Dr. López", Especialidad.RETINOLOGIA);
-        consulta.getPersonal().registrarEmpleado(medicoUno);
-        consulta.getPersonal().registrarEmpleado(medicoDos);
+        ArrayList<Empleado> empleadosParaRegistrar = new ArrayList<Empleado>();
+        ArrayList<Paciente> pacientesParaRegistrar = new ArrayList<Paciente>();
+
+        empleadosParaRegistrar.add(new Medico("N/A", "Dra. Rivera", "admin", Especialidad.OFTALMOLOGIA_GENERAL));
+        empleadosParaRegistrar.add(new Medico("N/A", "Dr. López", "admin", Especialidad.RETINOLOGIA));
+        empleadosParaRegistrar.add(new Enfermero("N/A", "Tom Holland", "admin"));
+        empleadosParaRegistrar.add(new Enfermero("N/A", "Robert Downey Jr.", "admin"));
+        empleadosParaRegistrar.add(new Secretaria("N/A", "Jeff Bezos", "admin"));
+        empleadosParaRegistrar.add(new Secretaria("N/A", "Yuji Itadori", "admin"));
+
+        pacientesParaRegistrar.add(new Paciente("N/A", "Muhammad Ali"));
+        pacientesParaRegistrar.add(new Paciente("N/A", "Matt Murdock"));
+
+        consulta.getPersonal().registrarEmpleados(empleadosParaRegistrar);
+        consulta.getPacientes().registrarPacientes(pacientesParaRegistrar);
     }
 
     private static void registrarPaciente() {
-        String id = leerTexto("ID: ");
         String nombre = leerTexto("Nombre: ");
-        Paciente paciente = new Paciente(id, nombre);
+        Paciente paciente = new Paciente("N/A", nombre);
         consulta.getPacientes().registrarPaciente(paciente);
         // El paciente queda en la fila rapido q termina su registro
         consulta.getPacientes().anadirAFila(paciente);
