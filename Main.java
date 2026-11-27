@@ -62,6 +62,18 @@ public class Main {
                     case 9:
                         mostrarMedicosDisponibles();
                         break;
+                    case 10:
+                        cancelarCita();
+                        break;
+                    case 11:
+                        mostrarVisitasRecientes();
+                        break;
+                    case 12:
+                        mostrarCitasDeFecha();
+                        break;
+                    case 13:
+                        mostrarTodasLasCitas();
+                        break;
                     case 0:
                         continuar = false;
                         break;
@@ -81,12 +93,16 @@ public class Main {
         System.out.println("2. Atender siguiente paciente");
         System.out.println("3. Ver pacientes en espera");
         System.out.println("4. Ver historial de paciente");
-        System.out.println("5. Crear cita para hoy");
+        System.out.println("5. Crear cita");
         System.out.println("6. Ver citas de hoy");
         System.out.println("7. Poner paciente en espera");
         System.out.println("8. Buscar médico por especialidad");
         System.out.println("9. Ver médicos disponibles");
         System.out.println("0. Salir");
+        System.out.println("10. Cancelar cita");
+        System.out.println("11. Ver visitas recientemente completadas");
+        System.out.println("12. Ver citas de una fecha");
+        System.out.println("13. Ver todas las citas activas");
     }
 
     private static void registrarLlegada() {
@@ -202,30 +218,58 @@ public class Main {
     
 
     private static void atenderSiguiente() {
-        // La fila entrega primero al paciente que lleva mas tiempo esperando
         Paciente paciente = consulta.asignarPaciente();
         if (paciente == null) {
             System.out.println("No hay pacientes esperando.");
             return;
         }
 
-        List<Medico> medicos = consulta.getPersonal().medicosDisponibles();
-        if (medicos.size() == 0) {
+        LocalDate hoy = LocalDate.now();
+        Cita citaAgendada = consulta.getCitas().buscarCitaDePacienteEnFecha(paciente.getId(), hoy);
+        List<Medico> medicosDisponibles = consulta.getPersonal().medicosDisponibles();
+        Medico medicoElegido = null;
+
+        if (citaAgendada != null) {
+            for (int i = 0; i < medicosDisponibles.size(); i++) {
+                if (medicosDisponibles.get(i).getId().equals(citaAgendada.getMedico().getId())) {
+                    medicoElegido = medicosDisponibles.get(i);
+                }
+            }
+        } else {
+            List<Cita> citasDeHoy = consulta.getCitas().citasDeHoy();
+            for (int i = 0; i < medicosDisponibles.size(); i++) {
+                Medico medico = medicosDisponibles.get(i);
+                boolean tieneCitaHoy = false;
+                for (int j = 0; j < citasDeHoy.size(); j++) {
+                    if (citasDeHoy.get(j).getMedico().getId().equals(medico.getId())) {
+                        tieneCitaHoy = true;
+                    }
+                }
+                if (!tieneCitaHoy) {
+                    medicoElegido = medico;
+                    break;
+                }
+            }
+        }
+
+        if (medicoElegido == null) {
             consulta.getPacientes().anadirAFila(paciente);
-            System.out.println("No hay médicos disponibles. El paciente sigue en la fila.");
+            System.out.println("No hay medico disponible para este paciente. Sigue en la fila.");
             return;
         }
 
-        Medico medico = medicos.get(0);
-        System.out.println("Atendiendo a " + paciente.getNombre() + " con " + medico.getNombre());
+        medicoElegido.setDisponible(false);
+        System.out.println("Atendiendo a " + paciente.getNombre() + " con " + medicoElegido.getNombre());
         String notas = leerTexto("Nota breve de la visita: ");
-        Cita cita = new Cita("V" + System.nanoTime(), paciente, medico, LocalDate.now());
-        Visita visita = new Visita(cita, notas);
+        Cita citaDeVisita = citaAgendada;
+        if (citaDeVisita == null) {
+            citaDeVisita = new Cita("V" + System.nanoTime(), paciente, medicoElegido, hoy);
+        }
+        Visita visita = new Visita(citaDeVisita, notas);
         consulta.getCitas().registrarVisita(visita);
-        consulta.marcarPacienteAtendido(visita);
+        medicoElegido.setDisponible(true);
         System.out.println("Visita registrada.");
     }
-
     private static void mostrarPacientesEnEspera() {
         List<Paciente> pacientes = consulta.getPacientes().pacientesEnEspera();
         if (pacientes.size() == 0) {
@@ -254,32 +298,154 @@ public class Main {
                 System.out.println(historial.get(i));
             }
         }
+
+        System.out.println("Citas del paciente:");
+        List<Cita> citasPaciente = consulta.getCitas().citasDePaciente(id);
+        if (citasPaciente.isEmpty()) {
+            System.out.println("No tiene citas registradas.");
+        } else {
+            for (int i = 0; i < citasPaciente.size(); i++) {
+                System.out.println(citasPaciente.get(i));
+            }
+        }
     }
 
     private static void crearCita() {
-        String id = leerTexto("ID del paciente: ");
-        Paciente paciente = consulta.getPacientes().buscarPorId(id);
+        String idPaciente = leerTexto("ID del paciente: ");
+        Paciente paciente = consulta.getPacientes().buscarPorId(idPaciente);
         if (paciente == null) {
-            System.out.println("Registra primero al paciente.");
+            System.out.println("No se encontro un paciente con ese ID.");
             return;
         }
 
-        List<Medico> medicos = consulta.getPersonal().medicosDisponibles();
-        if (medicos.size() == 0) {
-            System.out.println("No hay médicos disponibles.");
+        LocalDate fecha;
+        try {
+            fecha = LocalDate.parse(leerTexto("Fecha de la cita (AAAA-MM-DD): "));
+        } catch (java.time.DateTimeException e) {
+            System.out.println("Fecha incorrecta. Usa el formato AAAA-MM-DD.");
+            return;
+        }
+        if (fecha.isBefore(LocalDate.now())) {
+            System.out.println("La fecha no puede ser anterior a hoy.");
             return;
         }
 
-        Medico medico = medicos.get(0);
-        Cita cita = new Cita("C" + System.nanoTime(), paciente, medico, LocalDate.now());
+        Especialidad[] especialidades = Especialidad.values();
+        System.out.println("Especialidades:");
+        for (int i = 0; i < especialidades.length; i++) {
+            System.out.println((i + 1) + ". " + especialidades[i]);
+        }
+        int opcionEspecialidad = leerEntero("Elige una especialidad: ");
+        if (opcionEspecialidad < 1 || opcionEspecialidad > especialidades.length) {
+            System.out.println("Opcion no valida.");
+            return;
+        }
+        Especialidad especialidad = especialidades[opcionEspecialidad - 1];
+        List<Medico> medicos = consulta.getPersonal().buscarPorEspecialidad(especialidad);
+        if (medicos.isEmpty()) {
+            System.out.println("No hay medicos en esa especialidad.");
+            return;
+        }
+
+        List<Medico> medicosDisponibles = new ArrayList<Medico>();
+        List<Cita> citasExistentes = consulta.getCitas().citasDeFecha(fecha);
+        for (int i = 0; i < citasExistentes.size(); i++) {
+            if (citasExistentes.get(i).getPaciente().getId().equals(paciente.getId())) {
+                System.out.println("El paciente ya tiene una cita en esa fecha.");
+                return;
+            }
+        }
+        for (int i = 0; i < medicos.size(); i++) {
+            Medico medico = medicos.get(i);
+            boolean ocupado = false;
+            for (int j = 0; j < citasExistentes.size(); j++) {
+                if (citasExistentes.get(j).getMedico().getId().equals(medico.getId())) {
+                    ocupado = true;
+                }
+            }
+            if (!ocupado) {
+                medicosDisponibles.add(medico);
+            }
+        }
+        if (medicosDisponibles.isEmpty()) {
+            System.out.println("No hay medicos disponibles en esa fecha.");
+            return;
+        }
+
+        System.out.println("Medicos disponibles en esa fecha:");
+        for (int i = 0; i < medicosDisponibles.size(); i++) {
+            Medico medico = medicosDisponibles.get(i);
+            System.out.println((i + 1) + ". " + medico.getId() + " - " + medico.getNombre());
+        }
+        int opcionMedico = leerEntero("Elige un medico: ");
+        if (opcionMedico < 1 || opcionMedico > medicosDisponibles.size()) {
+            System.out.println("Opcion no valida.");
+            return;
+        }
+        Medico medicoElegido = medicosDisponibles.get(opcionMedico - 1);
+        Cita cita = new Cita("C" + System.nanoTime(), paciente, medicoElegido, fecha);
         consulta.getCitas().crearCita(cita);
         System.out.println("Cita creada: " + cita);
+    }
+    private static void cancelarCita() {
+        List<Cita> citas = consulta.getCitas().citasActivas();
+        if (citas.isEmpty()) {
+            System.out.println("No hay citas activas para cancelar.");
+            return;
+        }
+        System.out.println("Citas activas:");
+        for (int i = 0; i < citas.size(); i++) {
+            System.out.println(citas.get(i));
+        }
+        String id = leerTexto("ID de la cita: ");
+        consulta.getCitas().cancelarCita(id);
+        System.out.println("Cita cancelada.");
+    }
+
+    private static void mostrarVisitasRecientes() {
+        List<Visita> recientes = consulta.getCitas().visitasRecientes(5);
+        if (recientes.isEmpty()) {
+            System.out.println("No hay visitas completadas.");
+            return;
+        }
+        for (Visita visita : recientes) {
+            System.out.println(visita);
+        }
     }
 
     private static void mostrarCitasDeHoy() {
         List<Cita> citas = consulta.getCitas().citasDeHoy();
         if (citas.size() == 0) {
             System.out.println("No hay citas para hoy.");
+        } else {
+            for (int i = 0; i < citas.size(); i++) {
+                System.out.println(citas.get(i));
+            }
+        }
+    }
+
+    private static void mostrarCitasDeFecha() {
+        LocalDate fecha;
+        try {
+            fecha = LocalDate.parse(leerTexto("Fecha (AAAA-MM-DD): "));
+        } catch (java.time.DateTimeException e) {
+            System.out.println("Fecha incorrecta. Usa el formato AAAA-MM-DD.");
+            return;
+        }
+        List<Cita> citas = consulta.getCitas().citasDeFecha(fecha);
+        if (citas.isEmpty()) {
+            System.out.println("No hay citas para esa fecha.");
+        } else {
+            for (int i = 0; i < citas.size(); i++) {
+                System.out.println(citas.get(i));
+            }
+        }
+    }
+
+    private static void mostrarTodasLasCitas() {
+        List<Cita> citas = consulta.getCitas().citasActivas();
+        if (citas.isEmpty()) {
+            System.out.println("No hay citas activas.");
         } else {
             for (int i = 0; i < citas.size(); i++) {
                 System.out.println(citas.get(i));

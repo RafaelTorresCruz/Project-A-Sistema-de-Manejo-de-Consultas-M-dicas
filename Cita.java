@@ -6,6 +6,7 @@ public class Cita {
     private Medico medico;
     private LocalDate fecha;
     private boolean cancelada;
+    private boolean completada;
 
     public Cita(String id, Paciente paciente, Medico medico, LocalDate fecha) {
         this.id = id;
@@ -13,6 +14,7 @@ public class Cita {
         this.medico = medico;
         this.fecha = fecha;
         this.cancelada = false;
+        this.completada = false;
     }
 
     public String getId() {
@@ -35,14 +37,26 @@ public class Cita {
         return cancelada;
     }
 
+    public boolean isCompletada() {
+        return completada;
+    }
+
     public void cancelar() {
         cancelada = true;
+    }
+
+    public void completar() {
+        completada = true;
     }
 
     public String toString() {
         String resultado = id + " | " + fecha + " | " + paciente.getNombre() + " | " + medico.getNombre();
         if (cancelada) {
             resultado = resultado + " | CANCELADA";
+        } else if (completada) {
+            resultado = resultado + " | COMPLETADA";
+        } else {
+            resultado = resultado + " | PENDIENTE";
         }
         return resultado;
     }
