@@ -32,13 +32,13 @@ public class AdministrarPersonal {
     public String generateNextID(Empleo empleo) {
         String nuevoID = "";
         switch (empleo) {
-            case Empleo.MEDICO:
+            case MEDICO:
                 nuevoID += "M";
                 break;
-            case Empleo.ENFERMERO:
+            case ENFERMERO:
                 nuevoID += "E";
                 break;
-            case Empleo.SECRETARIO:
+            case SECRETARIO:
                 nuevoID += "S";
                 break;
             default:
