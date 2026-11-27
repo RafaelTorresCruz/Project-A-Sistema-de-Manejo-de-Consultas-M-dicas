@@ -10,6 +10,7 @@ public class Main {
     public static void main(String[] args) {
         //esto es solo un medico pa ejemplo para poder probar la atencion
         cargarDatosIniciales();
+        limpiarConsola();
         boolean aceptado = true;
         while (!aceptado) {
             String ID = leerTexto("ID de Empleado: ");
@@ -33,12 +34,16 @@ public class Main {
             int opcion = leerEntero("Selecciona una seccion: ");
             try {
                 if (opcion == 1) {
+                    limpiarConsola();
                     menuPacientes();
                 } else if (opcion == 2) {
+                    limpiarConsola();
                     menuCitas();
                 } else if (opcion == 3) {
-                    menuMedicos();
+                    limpiarConsola();
+                    menuPersonal();
                 } else if (opcion == 0) {
+                    limpiarConsola();
                     continuar = false;
                 } else {
                     System.out.println("Opcion no valida. Selecciona una de las opciones del menu.");
@@ -47,7 +52,10 @@ public class Main {
                 System.out.println("No se pudo completar: " + e.getMessage());
             }
         }
-        System.out.println("Hasta luego.");
+        System.out.println("==================================================");
+        System.out.println("        CONSULTORIO OFTALMOLOGICO - MAYAGUEZ");
+        System.out.println("                Hasta luego.");
+        System.out.println("==================================================");
     }
 
     private static void mostrarMenu() {
@@ -59,7 +67,7 @@ public class Main {
         System.out.println("MENU PRINCIPAL");
         System.out.println("1. Pacientes y atencion medica");
         System.out.println("2. Citas medicas");
-        System.out.println("3. Medicos y especialidades");
+        System.out.println("3. Personal, medicos y especialidades");
         System.out.println("0. Salir del sistema");
     }
 
@@ -77,22 +85,33 @@ public class Main {
             int opcion = leerEntero("Selecciona una opcion: ");
             try {
                 if (opcion == 1) {
+                    mostrarTituloResultado("Registrar paciente nuevo");
                     registrarPaciente();
+                    pausarResultado();
                 } else if (opcion == 2) {
+                    mostrarTituloResultado("Agregar paciente a la fila de espera");
                     registrarLlegada();
+                    pausarResultado();
                 } else if (opcion == 3) {
+                    mostrarTituloResultado("Pacientes en espera");
                     mostrarPacientesEnEspera();
+                    pausarResultado();
                 } else if (opcion == 4) {
+                    mostrarTituloResultado("Atender al siguiente paciente");
                     atenderSiguiente();
+                    pausarResultado();
                 } else if (opcion == 5) {
+                    mostrarTituloResultado("Historial clinico del paciente");
                     mostrarHistorial();
+                    pausarResultado();
                 } else if (opcion == 0) {
+                    limpiarConsola();
                     regresar = true;
                 } else {
                     System.out.println("Opcion no valida. Intenta de nuevo.");
                 }
             } catch (IllegalArgumentException e) {
-                System.out.println("No se pudo completar: " + e.getMessage());
+                mostrarError(e.getMessage());
             }
         }
     }
@@ -112,53 +131,194 @@ public class Main {
             int opcion = leerEntero("Selecciona una opcion: ");
             try {
                 if (opcion == 1) {
+                    mostrarTituloResultado("Agendar una cita");
                     crearCita();
+                    pausarResultado();
                 } else if (opcion == 2) {
+                    mostrarTituloResultado("Citas de hoy");
                     mostrarCitasDeHoy();
+                    pausarResultado();
                 } else if (opcion == 3) {
+                    mostrarTituloResultado("Citas de una fecha");
                     mostrarCitasDeFecha();
+                    pausarResultado();
                 } else if (opcion == 4) {
+                    mostrarTituloResultado("Citas pendientes");
                     mostrarTodasLasCitas();
+                    pausarResultado();
                 } else if (opcion == 5) {
+                    mostrarTituloResultado("Cancelar una cita");
                     cancelarCita();
+                    pausarResultado();
                 } else if (opcion == 6) {
+                    mostrarTituloResultado("Visitas completadas recientemente");
                     mostrarVisitasRecientes();
+                    pausarResultado();
                 } else if (opcion == 0) {
+                    limpiarConsola();
                     regresar = true;
                 } else {
                     System.out.println("Opcion no valida. Intenta de nuevo.");
                 }
             } catch (IllegalArgumentException e) {
-                System.out.println("No se pudo completar: " + e.getMessage());
+                mostrarError(e.getMessage());
             }
         }
     }
 
-    private static void menuMedicos() {
+    private static void menuPersonal() {
         boolean regresar = false;
         while (!regresar) {
             System.out.println();
-            System.out.println("-------------- MEDICOS Y ESPECIALIDADES -------------");
+            System.out.println("------------- PERSONAL Y MEDICOS -------------------");
             System.out.println("1. Buscar medicos por especialidad");
             System.out.println("2. Ver medicos disponibles ahora");
             System.out.println("3. Ver pacientes atendidos o citados con un medico");
+            System.out.println("4. Registrar empleado");
+            System.out.println("5. Buscar empleado por ID");
+            System.out.println("6. Ver todo el personal");
+            System.out.println("7. Eliminar medico");
             System.out.println("0. Volver al menu principal");
             int opcion = leerEntero("Selecciona una opcion: ");
             try {
                 if (opcion == 1) {
+                    mostrarTituloResultado("Buscar medicos por especialidad");
                     buscarMedicoPorEspecialidad();
+                    pausarResultado();
                 } else if (opcion == 2) {
+                    mostrarTituloResultado("Medicos disponibles ahora");
                     mostrarMedicosDisponibles();
+                    pausarResultado();
                 } else if (opcion == 3) {
+                    mostrarTituloResultado("Pacientes atendidos o citados con un medico");
                     mostrarPacientesDeMedico();
+                    pausarResultado();
+                } else if (opcion == 4) {
+                    mostrarTituloResultado("Registrar empleado");
+                    registrarEmpleado();
+                    pausarResultado();
+                } else if (opcion == 5) {
+                    mostrarTituloResultado("Buscar empleado por ID");
+                    mostrarEmpleadoPorID();
+                    pausarResultado();
+                } else if (opcion == 6) {
+                    mostrarTituloResultado("Personal registrado");
+                    mostrarPersonal();
+                    pausarResultado();
+                } else if (opcion == 7) {
+                    mostrarTituloResultado("Eliminar medico");
+                    eliminarMedico();
+                    pausarResultado();
                 } else if (opcion == 0) {
+                    limpiarConsola();
                     regresar = true;
                 } else {
                     System.out.println("Opcion no valida. Intenta de nuevo.");
                 }
             } catch (IllegalArgumentException e) {
-                System.out.println("No se pudo completar: " + e.getMessage());
+                mostrarError(e.getMessage());
             }
+        }
+    }
+    private static void registrarEmpleado() {
+        System.out.println("Tipo de empleado:");
+        System.out.println("1. Medico");
+        System.out.println("2. Enfermero");
+        System.out.println("3. Secretaria");
+        int tipo = leerEntero("Selecciona el tipo: ");
+        String nombre = leerTexto("Nombre completo: ");
+        if (nombre.isEmpty()) {
+            System.out.println("El nombre no puede estar vacio.");
+            return;
+        }
+        String password = leerTexto("Contrasena: ");
+        if (password.isEmpty()) {
+            System.out.println("La contrasena no puede estar vacia.");
+            return;
+        }
+
+        Empleado empleado;
+        if (tipo == 1) {
+            Especialidad[] especialidades = Especialidad.values();
+            System.out.println("Especialidades:");
+            for (int i = 0; i < especialidades.length; i++) {
+                System.out.println((i + 1) + ". " + especialidades[i]);
+            }
+            int opcion = leerEntero("Selecciona la especialidad: ");
+            if (opcion < 1 || opcion > especialidades.length) {
+                System.out.println("Opcion no valida.");
+                return;
+            }
+            empleado = new Medico("N/A", nombre, password, especialidades[opcion - 1]);
+        } else if (tipo == 2) {
+            empleado = new Enfermero("N/A", nombre, password);
+        } else if (tipo == 3) {
+            empleado = new Secretaria("N/A", nombre, password);
+        } else {
+            System.out.println("Tipo de empleado no valido.");
+            return;
+        }
+
+        consulta.getPersonal().registrarEmpleado(empleado);
+        System.out.println("Empleado registrado con ID: " + empleado.getId());
+    }
+
+    private static void mostrarEmpleadoPorID() {
+        String id = leerTexto("ID del empleado: ");
+        Empleado empleado = consulta.getPersonal().buscarPorID(id);
+        if (empleado == null) {
+            System.out.println("No se encontro un empleado con ese ID.");
+            return;
+        }
+        System.out.println("ID: " + empleado.getId());
+        System.out.println("Nombre: " + empleado.getNombre());
+        System.out.println("Puesto: " + empleado.getEmpleo());
+        if (empleado instanceof Medico) {
+            Medico medico = (Medico) empleado;
+            System.out.println("Especialidad: " + medico.getEspecialidad());
+            if (medico.isDisponible()) {
+                System.out.println("Estado: Disponible");
+            } else {
+                System.out.println("Estado: Ocupado");
+            }
+        }
+    }
+
+    private static void mostrarPersonal() {
+        List<Empleado> empleados = consulta.getPersonal().todosLosEmpleados();
+        if (empleados.isEmpty()) {
+            System.out.println("No hay empleados registrados.");
+            return;
+        }
+        System.out.println("PERSONAL REGISTRADO");
+        for (int i = 0; i < empleados.size(); i++) {
+            Empleado empleado = empleados.get(i);
+            System.out.print(empleado.getId() + " - " + empleado.getNombre() + " - " + empleado.getEmpleo());
+            if (empleado instanceof Medico) {
+                Medico medico = (Medico) empleado;
+                System.out.print(" - " + medico.getEspecialidad());
+            }
+            System.out.println();
+        }
+    }
+
+    private static void eliminarMedico() {
+        String id = leerTexto("ID del medico que desea eliminar: ");
+        Empleado empleado = consulta.getPersonal().buscarPorID(id);
+        if (empleado == null || !(empleado instanceof Medico)) {
+            System.out.println("No se encontro un medico con ese ID.");
+            return;
+        }
+        if (consulta.getCitas().tieneCitasPendientesMedico(id)) {
+            System.out.println("No se puede eliminar: el medico tiene citas pendientes.");
+            return;
+        }
+        String confirmar = leerTexto("Confirma la eliminacion (S/N): ");
+        if (confirmar.equalsIgnoreCase("S")) {
+            consulta.getPersonal().eliminarMedico(id);
+            System.out.println("Medico eliminado.");
+        } else {
+            System.out.println("No se elimino el medico.");
         }
     }
     private static void registrarLlegada() {
@@ -245,6 +405,8 @@ public class Main {
         ArrayList<Paciente> pacientesParaRegistrar = new ArrayList<Paciente>();
 
         empleadosParaRegistrar.add(new Medico("N/A", "Dra. Rivera", "admin", Especialidad.OFTALMOLOGIA_GENERAL));
+        empleadosParaRegistrar.add(new Medico("N/A", "Dra. Morales", "admin", Especialidad.OFTALMOLOGIA_PEDIATRICA));
+        empleadosParaRegistrar.add(new Medico("N/A", "Dr. Santos", "admin", Especialidad.NEUROOFTALMOLOGIA));
         empleadosParaRegistrar.add(new Medico("N/A", "Dr. López", "admin", Especialidad.RETINOLOGIA));
         empleadosParaRegistrar.add(new Enfermero("N/A", "Tom Holland", "admin"));
         empleadosParaRegistrar.add(new Enfermero("N/A", "Robert Downey Jr.", "admin"));
@@ -522,6 +684,40 @@ public class Main {
                 System.out.println(citas.get(i));
             }
         }
+    }
+
+    private static void limpiarConsola() {
+        System.out.print("\u001B[H\u001B[2J");
+        System.out.flush();
+    }
+
+    private static void mostrarTituloResultado(String titulo) {
+        limpiarConsola();
+        System.out.println("==================================================");
+        System.out.println("        CONSULTORIO OFTALMOLOGICO - MAYAGUEZ");
+        System.out.println("                  RESULTADO");
+        System.out.println("--------------------------------------------------");
+        System.out.println(titulo);
+        System.out.println("==================================================");
+    }
+
+    private static void pausarResultado() {
+        System.out.println();
+        System.out.print("Presiona ENTER para volver al menu...");
+        entrada.nextLine();
+        limpiarConsola();
+    }
+
+    private static void mostrarError(String mensaje) {
+        limpiarConsola();
+        System.out.println("==================================================");
+        System.out.println("        CONSULTORIO OFTALMOLOGICO - MAYAGUEZ");
+        System.out.println("                   RESULTADO");
+        System.out.println("--------------------------------------------------");
+        System.out.println("No se pudo completar la operacion:");
+        System.out.println(mensaje);
+        System.out.println("==================================================");
+        pausarResultado();
     }
 
     private static int leerEntero(String mensaje) {

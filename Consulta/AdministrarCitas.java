@@ -149,6 +149,18 @@ public class AdministrarCitas {
         return pacientesMedico;
     }
 
+    public boolean tieneCitasPendientesMedico(String idMedico) {
+        for (int i = 0; i < citas.size(); i++) {
+            Cita cita = citas.get(i);
+            if (cita.getMedico().getId().equals(idMedico)
+                    && !cita.isCancelada()
+                    && !cita.isCompletada()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public List<Cita> citas() {
         return new ArrayList<Cita>(citas);
     }
