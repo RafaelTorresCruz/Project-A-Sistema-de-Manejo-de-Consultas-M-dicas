@@ -28,57 +28,20 @@ public class Main {
         }
 
         boolean continuar = true;
-
         while (continuar) {
             mostrarMenu();
-            int opcion = leerEntero("Opción: ");
-
+            int opcion = leerEntero("Selecciona una seccion: ");
             try {
-                switch(opcion) {
-                    case 1:
-                        registrarPaciente();
-                        break;
-                    case 2:
-                        atenderSiguiente();
-                        break;
-                    case 3:
-                        mostrarPacientesEnEspera();
-                        break;
-                    case 4:
-                        mostrarHistorial();
-                        break;
-                    case 5:
-                        crearCita();
-                        break;
-                    case 6:
-                        mostrarCitasDeHoy();
-                        break;
-                    case 7:
-                        registrarLlegada();
-                        break;
-                    case 8:
-                        buscarMedicoPorEspecialidad();
-                        break;
-                    case 9:
-                        mostrarMedicosDisponibles();
-                        break;
-                    case 10:
-                        cancelarCita();
-                        break;
-                    case 11:
-                        mostrarVisitasRecientes();
-                        break;
-                    case 12:
-                        mostrarCitasDeFecha();
-                        break;
-                    case 13:
-                        mostrarTodasLasCitas();
-                        break;
-                    case 0:
-                        continuar = false;
-                        break;
-                    default:
-                        System.out.println("Opción no válida.");
+                if (opcion == 1) {
+                    menuPacientes();
+                } else if (opcion == 2) {
+                    menuCitas();
+                } else if (opcion == 3) {
+                    menuMedicos();
+                } else if (opcion == 0) {
+                    continuar = false;
+                } else {
+                    System.out.println("Opcion no valida. Selecciona una de las opciones del menu.");
                 }
             } catch (IllegalArgumentException e) {
                 System.out.println("No se pudo completar: " + e.getMessage());
@@ -88,23 +51,113 @@ public class Main {
     }
 
     private static void mostrarMenu() {
-        System.out.println("\n=== Sistema de Consultas Médicas ===");
-        System.out.println("1. Registrar paciente nuevo");
-        System.out.println("2. Atender siguiente paciente");
-        System.out.println("3. Ver pacientes en espera");
-        System.out.println("4. Ver historial de paciente");
-        System.out.println("5. Crear cita");
-        System.out.println("6. Ver citas de hoy");
-        System.out.println("7. Poner paciente en espera");
-        System.out.println("8. Buscar médico por especialidad");
-        System.out.println("9. Ver médicos disponibles");
-        System.out.println("0. Salir");
-        System.out.println("10. Cancelar cita");
-        System.out.println("11. Ver visitas recientemente completadas");
-        System.out.println("12. Ver citas de una fecha");
-        System.out.println("13. Ver todas las citas activas");
+        System.out.println();
+        System.out.println("==================================================");
+        System.out.println("        CONSULTORIO OFTALMOLOGICO - MAYAGUEZ");
+        System.out.println("             Sistema de manejo medico");
+        System.out.println("==================================================");
+        System.out.println("MENU PRINCIPAL");
+        System.out.println("1. Pacientes y atencion medica");
+        System.out.println("2. Citas medicas");
+        System.out.println("3. Medicos y especialidades");
+        System.out.println("0. Salir del sistema");
     }
 
+    private static void menuPacientes() {
+        boolean regresar = false;
+        while (!regresar) {
+            System.out.println();
+            System.out.println("--------------- PACIENTES Y ATENCION ---------------");
+            System.out.println("1. Registrar paciente nuevo");
+            System.out.println("2. Agregar paciente a la fila de espera");
+            System.out.println("3. Ver pacientes en espera");
+            System.out.println("4. Atender al siguiente paciente");
+            System.out.println("5. Ver historial clinico y citas de un paciente");
+            System.out.println("0. Volver al menu principal");
+            int opcion = leerEntero("Selecciona una opcion: ");
+            try {
+                if (opcion == 1) {
+                    registrarPaciente();
+                } else if (opcion == 2) {
+                    registrarLlegada();
+                } else if (opcion == 3) {
+                    mostrarPacientesEnEspera();
+                } else if (opcion == 4) {
+                    atenderSiguiente();
+                } else if (opcion == 5) {
+                    mostrarHistorial();
+                } else if (opcion == 0) {
+                    regresar = true;
+                } else {
+                    System.out.println("Opcion no valida. Intenta de nuevo.");
+                }
+            } catch (IllegalArgumentException e) {
+                System.out.println("No se pudo completar: " + e.getMessage());
+            }
+        }
+    }
+
+    private static void menuCitas() {
+        boolean regresar = false;
+        while (!regresar) {
+            System.out.println();
+            System.out.println("------------------- CITAS MEDICAS -------------------");
+            System.out.println("1. Agendar una cita");
+            System.out.println("2. Ver citas de hoy");
+            System.out.println("3. Ver citas de una fecha");
+            System.out.println("4. Ver citas pendientes");
+            System.out.println("5. Cancelar una cita pendiente");
+            System.out.println("6. Ver visitas completadas recientemente");
+            System.out.println("0. Volver al menu principal");
+            int opcion = leerEntero("Selecciona una opcion: ");
+            try {
+                if (opcion == 1) {
+                    crearCita();
+                } else if (opcion == 2) {
+                    mostrarCitasDeHoy();
+                } else if (opcion == 3) {
+                    mostrarCitasDeFecha();
+                } else if (opcion == 4) {
+                    mostrarTodasLasCitas();
+                } else if (opcion == 5) {
+                    cancelarCita();
+                } else if (opcion == 6) {
+                    mostrarVisitasRecientes();
+                } else if (opcion == 0) {
+                    regresar = true;
+                } else {
+                    System.out.println("Opcion no valida. Intenta de nuevo.");
+                }
+            } catch (IllegalArgumentException e) {
+                System.out.println("No se pudo completar: " + e.getMessage());
+            }
+        }
+    }
+
+    private static void menuMedicos() {
+        boolean regresar = false;
+        while (!regresar) {
+            System.out.println();
+            System.out.println("-------------- MEDICOS Y ESPECIALIDADES -------------");
+            System.out.println("1. Buscar medicos por especialidad");
+            System.out.println("2. Ver medicos disponibles ahora");
+            System.out.println("0. Volver al menu principal");
+            int opcion = leerEntero("Selecciona una opcion: ");
+            try {
+                if (opcion == 1) {
+                    buscarMedicoPorEspecialidad();
+                } else if (opcion == 2) {
+                    mostrarMedicosDisponibles();
+                } else if (opcion == 0) {
+                    regresar = true;
+                } else {
+                    System.out.println("Opcion no valida. Intenta de nuevo.");
+                }
+            } catch (IllegalArgumentException e) {
+                System.out.println("No se pudo completar: " + e.getMessage());
+            }
+        }
+    }
     private static void registrarLlegada() {
         String id = leerTexto("ID del paciente: ");
         consulta.registrarLlegada(id);
