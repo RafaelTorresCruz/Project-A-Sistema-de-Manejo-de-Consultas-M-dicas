@@ -18,7 +18,16 @@ public class AdministrarPacientes {
         if (paciente == null) {
             throw new IllegalArgumentException("El paciente no puede estar vacío.");
         }
-        if (paciente.getId().equals("N/A")) {
+        if (paciente.getNombre() == null || paciente.getNombre().trim().isEmpty()) {
+            throw new IllegalArgumentException("El nombre del paciente no puede estar vacío.");
+        }
+        String nombreNuevo = paciente.getNombre().trim();
+        for (Paciente pacienteExistente : pacientes.values()) {
+            if (pacienteExistente.getNombre().trim().equalsIgnoreCase(nombreNuevo)) {
+                throw new IllegalArgumentException("Ya existe un paciente con ese nombre.");
+            }
+        }
+        if (paciente.getId() == null || paciente.getId().equals("N/A")) {
             paciente.setId(generateNextID());
         }
         // El ID identifica al paciente y evita guardar el mismo registro dos veces.

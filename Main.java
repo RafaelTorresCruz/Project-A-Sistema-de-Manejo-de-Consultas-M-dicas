@@ -141,6 +141,7 @@ public class Main {
             System.out.println("-------------- MEDICOS Y ESPECIALIDADES -------------");
             System.out.println("1. Buscar medicos por especialidad");
             System.out.println("2. Ver medicos disponibles ahora");
+            System.out.println("3. Ver pacientes atendidos o citados con un medico");
             System.out.println("0. Volver al menu principal");
             int opcion = leerEntero("Selecciona una opcion: ");
             try {
@@ -148,6 +149,8 @@ public class Main {
                     buscarMedicoPorEspecialidad();
                 } else if (opcion == 2) {
                     mostrarMedicosDisponibles();
+                } else if (opcion == 3) {
+                    mostrarPacientesDeMedico();
                 } else if (opcion == 0) {
                     regresar = true;
                 } else {
@@ -193,19 +196,34 @@ public class Main {
     private static void mostrarMedicosDisponibles() {
         List<Medico> medicos = consulta.getPersonal().medicosDisponibles();
         if (medicos.isEmpty()) {
-            System.out.println("No hay médicos disponibles.");
+            System.out.println("No hay medicos disponibles.");
         } else {
-            for (Medico m : medicos) {
-                imprimirMedico(m);
+            for (int i = 0; i < medicos.size(); i++) {
+                imprimirMedico(medicos.get(i));
+            }
         }
     }
 
+    private static void mostrarPacientesDeMedico() {
+        String idMedico = leerTexto("ID del medico: ");
+        Empleado empleado = consulta.getPersonal().buscarPorID(idMedico);
+        if (empleado == null || !(empleado instanceof Medico)) {
+            System.out.println("No se encontro un medico con ese ID.");
+            return;
+        }
 
-
+        Medico medico = (Medico) empleado;
+        List<Paciente> pacientes = consulta.getCitas().pacientesDeMedico(medico.getId());
+        if (pacientes.isEmpty()) {
+            System.out.println("Este medico no tiene pacientes registrados.");
+        } else {
+            System.out.println("Pacientes de " + medico.getNombre() + ":");
+            for (int i = 0; i < pacientes.size(); i++) {
+                Paciente paciente = pacientes.get(i);
+                System.out.println(paciente.getId() + " - " + paciente.getNombre());
+            }
+        }
     }
-
-
-
     private static void imprimirMedico(Medico m) {
         String estado;
         if (m.isDisponible()) {

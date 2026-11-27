@@ -125,6 +125,30 @@ public class AdministrarCitas {
         return citasPaciente;
     }
 
+    public List<Paciente> pacientesDeMedico(String idMedico) {
+        List<Paciente> pacientesMedico = new ArrayList<Paciente>();
+
+        for (int i = 0; i < citas.size(); i++) {
+            Cita cita = citas.get(i);
+            if (!cita.isCancelada() && cita.getMedico().getId().equals(idMedico)) {
+                if (!pacientesMedico.contains(cita.getPaciente())) {
+                    pacientesMedico.add(cita.getPaciente());
+                }
+            }
+        }
+
+        for (int i = 0; i < visitas.size(); i++) {
+            Cita cita = visitas.get(i).getCita();
+            if (cita.getMedico().getId().equals(idMedico)) {
+                if (!pacientesMedico.contains(cita.getPaciente())) {
+                    pacientesMedico.add(cita.getPaciente());
+                }
+            }
+        }
+
+        return pacientesMedico;
+    }
+
     public List<Cita> citas() {
         return new ArrayList<Cita>(citas);
     }
