@@ -10,7 +10,7 @@ public class Main {
     public static void main(String[] args) {
         //esto es solo un medico pa ejemplo para poder probar la atencion
         cargarDatosIniciales();
-        boolean aceptado = false;
+        boolean aceptado = true;
         while (!aceptado) {
             String ID = leerTexto("ID de Empleado: ");
             Empleado empleado = buscarEmpleadoPorID(ID);
@@ -53,6 +53,10 @@ public class Main {
                     case 6:
                         mostrarCitasDeHoy();
                         break;
+                    case 7:
+                        registrarLlegada();
+                        break;
+
                     case 0:
                         continuar = false;
                         break;
@@ -68,14 +72,22 @@ public class Main {
 
     private static void mostrarMenu() {
         System.out.println("\n=== Sistema de Consultas Médicas ===");
-        System.out.println("1. Registrar paciente y ponerlo en espera");
+        System.out.println("1. Registrar paciente nuevo");
         System.out.println("2. Atender siguiente paciente");
         System.out.println("3. Ver pacientes en espera");
         System.out.println("4. Ver historial de paciente");
         System.out.println("5. Crear cita para hoy");
         System.out.println("6. Ver citas de hoy");
+        System.out.println("7. Poner paciente en espera");
         System.out.println("0. Salir");
     }
+
+    private static void registrarLlegada() {
+    String id = leerTexto("ID del paciente: ");
+    consulta.registrarLlegada(id);
+    System.out.println("Paciente añadido a la fila de espera.");
+}
+
 
     private static Empleado buscarEmpleadoPorID(String ID) {
         return consulta.getPersonal().buscarPorID(ID);
@@ -99,14 +111,32 @@ public class Main {
         consulta.getPacientes().registrarPacientes(pacientesParaRegistrar);
     }
 
-    private static void registrarPaciente() {
-        String nombre = leerTexto("Nombre: ");
-        Paciente paciente = new Paciente("N/A", nombre);
-        consulta.getPacientes().registrarPaciente(paciente);
-        // El paciente queda en la fila rapido q termina su registro
-        consulta.getPacientes().anadirAFila(paciente);
-        System.out.println("Paciente registrado y añadido a la fila.");
+
+private static void registrarPaciente() {
+    String nombre = leerTexto("Nombre: ");
+    if (nombre.isEmpty()) {
+        System.out.println("El nombre no puede estar vacío.");
+        return;
     }
+    Paciente paciente = new Paciente("N/A", nombre);
+    consulta.getPacientes().registrarPaciente(paciente);
+    System.out.println("Paciente registrado con ID: " + paciente.getId());
+
+
+    String respuesta = leerTexto("¿Poner paciente nuevo en espera? (Y/N): ");
+    while (!respuesta.equalsIgnoreCase("Y") && !respuesta.equalsIgnoreCase("N")) {
+        respuesta = leerTexto("Escribe Y o N: ");
+    }
+
+    if (respuesta.equalsIgnoreCase("Y")) {
+        consulta.registrarLlegada(paciente.getId());
+        System.out.println("Paciente añadido a la fila de espera.");}
+
+    if (respuesta.equalsIgnoreCase("N")) {
+        System.out.println("Paciente añadido solo al registro.");}
+
+    
+}
 
     private static void atenderSiguiente() {
         // La fila entrega primero al paciente que lleva mas tiempo esperando
