@@ -1,21 +1,11 @@
-@echo off
-echo Compilando...
-
+cls
+echo Borrando clases viejas.
 if exist out rmdir /s /q out
 mkdir out
-
+echo Compilando.
 dir /s /b *.java > sources.txt
 javac -d out @sources.txt
-if errorlevel 1 (
-    echo.
-    echo ERROR: no compilo. Revisa los mensajes de arriba.
-    del sources.txt
-    pause
-    exit /b 1
-)
 del sources.txt
-
-echo Listo. Ejecutando...
-echo.
+echo Ejecutando.
 java -cp out Main
-pause
+echo Listo!
