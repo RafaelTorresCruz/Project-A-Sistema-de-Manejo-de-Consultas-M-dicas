@@ -23,14 +23,14 @@ public class ConsultaMedica {
     }
 
     public void registrarLlegada(String idPaciente) {
-    Paciente p = pacientes.buscarPorId(idPaciente);
-    if (p == null) {
-        throw new IllegalArgumentException("No existe un paciente con ese ID.");
-    }
-    if (pacientes.pacientesEnEspera().contains(p)) {
-        throw new IllegalArgumentException("Ese paciente ya está en fila.");
-    }
-    pacientes.anadirAFila(p);
+        Paciente p = pacientes.buscarPorId(idPaciente);
+            if (p == null) {
+                throw new IllegalArgumentException("No existe un paciente con ese ID.");
+            }
+            if (pacientes.pacientesEnEspera().contains(p)) {
+                throw new IllegalArgumentException("Ese paciente ya está en fila.");
+            }
+        pacientes.anadirAFila(p);
 }
 
 

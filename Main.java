@@ -56,7 +56,12 @@ public class Main {
                     case 7:
                         registrarLlegada();
                         break;
-
+                    case 8:
+                        buscarMedicoPorEspecialidad();
+                        break;
+                    case 9:
+                        mostrarMedicosDisponibles();
+                        break;
                     case 0:
                         continuar = false;
                         break;
@@ -79,13 +84,68 @@ public class Main {
         System.out.println("5. Crear cita para hoy");
         System.out.println("6. Ver citas de hoy");
         System.out.println("7. Poner paciente en espera");
+        System.out.println("8. Buscar médico por especialidad");
+        System.out.println("9. Ver médicos disponibles");
         System.out.println("0. Salir");
     }
 
     private static void registrarLlegada() {
-    String id = leerTexto("ID del paciente: ");
-    consulta.registrarLlegada(id);
-    System.out.println("Paciente añadido a la fila de espera.");
+        String id = leerTexto("ID del paciente: ");
+        consulta.registrarLlegada(id);
+        System.out.println("Paciente añadido a la fila de espera.");
+}
+
+    private static void buscarMedicoPorEspecialidad(){
+        Especialidad[] especialidades = Especialidad.values();
+        System.out.println("Especialidades:");
+        for (int i = 0; i < especialidades.length; i++) {
+            System.out.println((i + 1) + ". " + especialidades[i]);
+    }
+
+    int opcion = leerEntero("Elige una especialidad: ");
+        if (opcion < 1 || opcion > especialidades.length) {
+            System.out.println("Opción no válida.");
+            return;
+    }
+    Especialidad elegida = especialidades[opcion - 1];
+    List<Medico> medicos = consulta.getPersonal().buscarPorEspecialidad(elegida);
+
+     if (medicos.isEmpty()) {
+        System.out.println("No hay médicos de " + elegida + ".");
+    } else {
+        for (Medico m : medicos) {
+            imprimirMedico(m);
+        }
+    }
+
+
+    }
+
+    private static void mostrarMedicosDisponibles() {
+        List<Medico> medicos = consulta.getPersonal().medicosDisponibles();
+        if (medicos.isEmpty()) {
+            System.out.println("No hay médicos disponibles.");
+        } else {
+            for (Medico m : medicos) {
+                imprimirMedico(m);
+        }
+    }
+
+
+
+    }
+
+
+
+    private static void imprimirMedico(Medico m) {
+        String estado;
+        if (m.isDisponible()) {
+            estado = "Disponible";
+        } else {
+            estado = "Ocupado";
+        }
+        
+        System.out.println(m.getId() + " - " + m.getNombre() + " | " + m.getEspecialidad() + " | " + estado);
 }
 
 
@@ -112,31 +172,34 @@ public class Main {
     }
 
 
-private static void registrarPaciente() {
-    String nombre = leerTexto("Nombre: ");
-    if (nombre.isEmpty()) {
-        System.out.println("El nombre no puede estar vacío.");
-        return;
+    private static void registrarPaciente() {
+        String nombre = leerTexto("Nombre: ");
+        if (nombre.isEmpty()) {
+            System.out.println("El nombre no puede estar vacío.");
+            return;
+        }
+        Paciente paciente = new Paciente("N/A", nombre);
+        consulta.getPacientes().registrarPaciente(paciente);
+        System.out.println("Paciente registrado con ID: " + paciente.getId());
+
+
+        String respuesta = leerTexto("¿Poner paciente nuevo en espera? (Y/N): ");
+        while (!respuesta.equalsIgnoreCase("Y") && !respuesta.equalsIgnoreCase("N")) {
+            respuesta = leerTexto("Escribe Y o N: ");
+        }
+
+        if (respuesta.equalsIgnoreCase("Y")) {
+            consulta.registrarLlegada(paciente.getId());
+            System.out.println("Paciente añadido a la fila de espera.");}
+
+        if (respuesta.equalsIgnoreCase("N")) {
+            System.out.println("Paciente añadido solo al registro.");}
+
+        
     }
-    Paciente paciente = new Paciente("N/A", nombre);
-    consulta.getPacientes().registrarPaciente(paciente);
-    System.out.println("Paciente registrado con ID: " + paciente.getId());
-
-
-    String respuesta = leerTexto("¿Poner paciente nuevo en espera? (Y/N): ");
-    while (!respuesta.equalsIgnoreCase("Y") && !respuesta.equalsIgnoreCase("N")) {
-        respuesta = leerTexto("Escribe Y o N: ");
-    }
-
-    if (respuesta.equalsIgnoreCase("Y")) {
-        consulta.registrarLlegada(paciente.getId());
-        System.out.println("Paciente añadido a la fila de espera.");}
-
-    if (respuesta.equalsIgnoreCase("N")) {
-        System.out.println("Paciente añadido solo al registro.");}
+    
 
     
-}
 
     private static void atenderSiguiente() {
         // La fila entrega primero al paciente que lleva mas tiempo esperando
