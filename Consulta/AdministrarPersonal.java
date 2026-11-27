@@ -70,12 +70,7 @@ public class AdministrarPersonal {
     }
 
     public Empleado buscarPorID(String ID) {
-        for (Empleado empleado : empleados.values()) {
-            if (empleado.getId().equals(ID)) {
-                return empleado;
-            }
-        }
-        return null;
+       return empleados.get(ID);
     }
 
     public List<Medico> medicosDisponibles() {
