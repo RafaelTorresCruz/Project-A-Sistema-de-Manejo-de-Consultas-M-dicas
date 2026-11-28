@@ -500,11 +500,11 @@ public class Main {
         }
 
         if (medicoElegido == null) {
-            consulta.getPacientes().anadirAFila(paciente);
             System.out.println("No hay medico disponible para este paciente. Sigue en la fila.");
             return;
         }
 
+        consulta.asignarPaciente();   
         medicoElegido.setDisponible(false);
         System.out.println("Atendiendo a " + paciente.getNombre() + " con " + medicoElegido.getNombre());
         String notas = leerTexto("Nota breve de la visita: ");
@@ -526,7 +526,7 @@ public class Main {
                 Paciente paciente = pacientes.get(i);
 
                 if(paciente.isEmergencia() ){
-                    System.out.println(paciente.getId() + " - " + paciente.getNombre() + " [URGENCIA prioridad" + paciente.getPrioridad() + "]");
+                    System.out.println(paciente.getId() + " - " + paciente.getNombre() + " [URGENCIA prioridad " + paciente.getPrioridad() + "]");
 
                 }
 
