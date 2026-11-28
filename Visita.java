@@ -1,26 +1,47 @@
 public class Visita {
     private Cita cita;
-    private String notas;
+    private String notasDelEnfermero;
+    private String notasDelMedico;
 
     public Visita(Cita cita) {
         this.cita = cita;
-        this.notas = "";
+        this.notasDelEnfermero = "";
+        this.notasDelMedico = "";
     }
 
-    public Visita(Cita cita, String notas) {
+    public Visita(Cita cita, String notasDelEnfermero) {
         this.cita = cita;
-        this.notas = notas;
+        this.notasDelEnfermero = notasDelEnfermero;
     }
 
     public Cita getCita() {
         return cita;
     }
 
-    public String getNotas() {
-        return notas;
+    public String getNotasDelMedico() {
+        return notasDelMedico;
+    }
+
+    public void setNotasDelMedico(String notasDelMedico) {
+        this.notasDelMedico = notasDelMedico;
+    }
+
+    public String getNotasDelEnfermero() {
+        return notasDelEnfermero;
+    }
+
+    public void setNotasDelEnfermero(String notasDelEnfermero) {
+        this.notasDelEnfermero = notasDelEnfermero;
     }
 
     public String toString() {
-        return cita.toString() + " | Nota: " + notas;
+        String val = cita.toString();
+        if (notasDelMedico.length() > 0) {
+            val += "\nNotas del Medico: " + notasDelMedico;
+        }
+        if (notasDelEnfermero.length() > 0) {
+            val += "\nNotas del Enfermero: " + notasDelEnfermero;
+        }
+        return val;
     }
 }

@@ -6,6 +6,7 @@ import java.util.Scanner;
 public class Main {
     private static Scanner entrada = new Scanner(System.in);
     private static ConsultaMedica consulta = new ConsultaMedica();
+    private static Empleado usuario;
 
     public static void main(String[] args) {
         //esto es solo un medico pa ejemplo para poder probar la atencion
@@ -14,17 +15,20 @@ public class Main {
         boolean aceptado = true;
         while (!aceptado) {
             String ID = leerTexto("ID de Empleado: ");
-            Empleado empleado = buscarEmpleadoPorID(ID);
+            usuario = buscarEmpleadoPorID(ID);
 
-            if (empleado != null) {
+            if (usuario != null) {
                 String password = leerTexto("Contraseña: ");
-                if (password.equals(empleado.password)) {
+                if (password.equals(usuario.password)) {
                     aceptado = true;
-                    System.out.println("Bienvendos %s!".formatted(empleado.getNombre()));
+                    System.out.println("Bienvendos %s!".formatted(usuario.getNombre()));
                 }
                 else {
                     System.out.println("Contraseña Incorrecta. Saliendo...");
                 }
+            }
+            else {
+                System.out.println("ID no existe. Trata otra vez");
             }
         }
 
@@ -39,7 +43,7 @@ public class Main {
                 } else if (opcion == 2) {
                     limpiarConsola();
                     menuCitas();
-                } else if (opcion == 3) {
+                } else if (opcion == 3 && tienePermiso("S")) {
                     limpiarConsola();
                     menuPersonal();
                 } else if (opcion == 0) {
@@ -81,28 +85,33 @@ public class Main {
             System.out.println("3. Ver pacientes en espera");
             System.out.println("4. Atender al siguiente paciente");
             System.out.println("5. Ver historial clinico y citas de un paciente");
+            System.out.println("6. Tomar datos vitales de paciente");
             System.out.println("0. Volver al menu principal");
             int opcion = leerEntero("Selecciona una opcion: ");
             try {
-                if (opcion == 1) {
+                if (opcion == 1 && tienePermiso("S")) {
                     mostrarTituloResultado("Registrar paciente nuevo");
                     registrarPaciente();
                     pausarResultado();
-                } else if (opcion == 2) {
+                } else if (opcion == 2 && tienePermiso("S")) {
                     mostrarTituloResultado("Agregar paciente a la fila de espera");
                     registrarLlegada();
                     pausarResultado();
-                } else if (opcion == 3) {
+                } else if (opcion == 3 && tienePermiso("S")) {
                     mostrarTituloResultado("Pacientes en espera");
                     mostrarPacientesEnEspera();
                     pausarResultado();
-                } else if (opcion == 4) {
+                } else if (opcion == 4 && tienePermiso("M")) {
                     mostrarTituloResultado("Atender al siguiente paciente");
                     atenderSiguiente();
                     pausarResultado();
                 } else if (opcion == 5) {
                     mostrarTituloResultado("Historial clinico del paciente");
                     mostrarHistorial();
+                    pausarResultado();
+                } else if (opcion == 6 && tienePermiso("E")) {
+                    mostrarTituloResultado("Tomando datos vitales del paciente");
+                    tomarDatosVitales();
                     pausarResultado();
                 } else if (opcion == 0) {
                     limpiarConsola();
@@ -130,7 +139,7 @@ public class Main {
             System.out.println("0. Volver al menu principal");
             int opcion = leerEntero("Selecciona una opcion: ");
             try {
-                if (opcion == 1) {
+                if (opcion == 1 && tienePermiso("S")) {
                     mostrarTituloResultado("Agendar una cita");
                     crearCita();
                     pausarResultado();
@@ -146,13 +155,9 @@ public class Main {
                     mostrarTituloResultado("Citas pendientes");
                     mostrarTodasLasCitas();
                     pausarResultado();
-                } else if (opcion == 5) {
+                } else if (opcion == 5 && tienePermiso("S")) {
                     mostrarTituloResultado("Cancelar una cita");
                     cancelarCita();
-                    pausarResultado();
-                } else if (opcion == 6) {
-                    mostrarTituloResultado("Visitas completadas recientemente");
-                    mostrarVisitasRecientes();
                     pausarResultado();
                 } else if (opcion == 0) {
                     limpiarConsola();
@@ -193,11 +198,11 @@ public class Main {
                     mostrarTituloResultado("Pacientes atendidos o citados con un medico");
                     mostrarPacientesDeMedico();
                     pausarResultado();
-                } else if (opcion == 4) {
+                } else if (opcion == 4 && tienePermiso("S")) {
                     mostrarTituloResultado("Registrar empleado");
                     registrarEmpleado();
                     pausarResultado();
-                } else if (opcion == 5) {
+                } else if (opcion == 5 && tienePermiso("S")) {
                     mostrarTituloResultado("Buscar empleado por ID");
                     mostrarEmpleadoPorID();
                     pausarResultado();
@@ -219,6 +224,33 @@ public class Main {
                 mostrarError(e.getMessage());
             }
         }
+    }
+    private static boolean tienePermiso(String allowed) {
+        if (usuario == null) {
+            throw new NullPointerException("Usuario no encontrado");
+        }
+        Empleo empleo = usuario.getEmpleo();
+        boolean permiso = false;
+        switch (empleo) {
+            case MEDICO:
+                permiso = allowed.indexOf('M') != -1;
+                break;
+            case ENFERMERO:
+                permiso = allowed.indexOf('E') != -1;
+                break;
+            case SECRETARIO:
+                permiso = allowed.indexOf('S') != -1;
+                break;
+            default:
+                throw new NullPointerException("Usuario no tiene un empleo asignado");
+        }
+        if (!permiso) {
+            System.out.println("No tienes permiso para ver este contenido. Trata otra opcion.");
+        }
+        return permiso;
+    }
+    private static void tomarDatosVitales() {
+
     }
     private static void registrarEmpleado() {
         System.out.println("Tipo de empleado:");
