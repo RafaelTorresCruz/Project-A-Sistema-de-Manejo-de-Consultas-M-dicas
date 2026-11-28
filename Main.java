@@ -81,6 +81,7 @@ public class Main {
             System.out.println("3. Ver pacientes en espera");
             System.out.println("4. Atender al siguiente paciente");
             System.out.println("5. Ver historial clinico y citas de un paciente");
+            System.out.println("6. Registrar urgencia");
             System.out.println("0. Volver al menu principal");
             int opcion = leerEntero("Selecciona una opcion: ");
             try {
@@ -104,7 +105,12 @@ public class Main {
                     mostrarTituloResultado("Historial clinico del paciente");
                     mostrarHistorial();
                     pausarResultado();
-                } else if (opcion == 0) {
+                }
+                else if (opcion == 6) {
+                    mostrarTituloResultado("Registrar urgencia");
+                    registrarUrgencia();
+                    pausarResultado();}
+                else if (opcion == 0) {
                     limpiarConsola();
                     regresar = true;
                 } else {
@@ -327,6 +333,14 @@ public class Main {
         System.out.println("Paciente añadido a la fila de espera.");
 }
 
+    private static void registrarUrgencia() {
+        String id = leerTexto("ID del paciente: ");
+        int prioridad = leerEntero("Prioridad (1 = baja, 2 = media, 3 = critica): ");
+        consulta.registrarUrgencia(id, prioridad);
+        System.out.println("Paciente añadido a urgencias.");
+    }
+
+
     private static void buscarMedicoPorEspecialidad(){
         Especialidad[] especialidades = Especialidad.values();
         System.out.println("Especialidades:");
@@ -451,7 +465,7 @@ public class Main {
     
 
     private static void atenderSiguiente() {
-        Paciente paciente = consulta.asignarPaciente();
+        Paciente paciente = consulta.getPacientes().verSiguienteParaAtender();
         if (paciente == null) {
             System.out.println("No hay pacientes esperando.");
             return;
@@ -510,7 +524,14 @@ public class Main {
         } else {
             for (int i = 0; i < pacientes.size(); i++) {
                 Paciente paciente = pacientes.get(i);
-                System.out.println(paciente.getId() + " - " + paciente.getNombre());
+
+                if(paciente.isEmergencia() ){
+                    System.out.println(paciente.getId() + " - " + paciente.getNombre() + " [URGENCIA prioridad" + paciente.getPrioridad() + "]");
+
+                }
+
+                else {
+                System.out.println(paciente.getId() + " - " + paciente.getNombre());}
             }
         }
     }
