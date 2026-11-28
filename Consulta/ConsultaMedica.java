@@ -13,7 +13,7 @@ public class ConsultaMedica {
 
     public Paciente asignarPaciente() {
         // Toma al siguiente paciente según el orden de la fila.
-        return pacientes.siguienteEnFila();
+        return pacientes.siguienteParaAtender();
     }
 
     public void marcarPacienteAtendido(Visita visita) {
