@@ -12,6 +12,20 @@ Sistema de Manejo de Consultas Médicas
 El sistema está en consola. Permite al usuario registrar nuevos pacientes, atenderlos, ver el historial, ver a los pacientes en espera 
 creas citas, ver las citas, buscar los médicos disponibles y ver a los médicos por especialidad.
 
+El sistema requiere un ID de empleado y una contraseña. El tipo de usuario (Medico, Enfermero, Secretario) va a determinar sus permisos en el programa. Por ejemplo, solo secretarios pueden registrar nuevos pacientes.
+Los IDs que puede entrar:
+M00000
+M00001
+M00002
+M00003
+E00004
+E00005
+S00006
+S00007
+
+La contraseña de todos los empleados es "admin".
+
+Si no quiere lidiar con los permisos, pueden entrar "debug" en vez del ID.
 
 ## 3. Instalación
 
