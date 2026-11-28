@@ -9,8 +9,9 @@ public class Visita {
         this.notasDelMedico = "";
     }
 
-    public Visita(Cita cita, String notasDelEnfermero) {
+    public Visita(Cita cita, String notasDelMedico, String notasDelEnfermero) {
         this.cita = cita;
+        this.notasDelMedico = notasDelMedico;
         this.notasDelEnfermero = notasDelEnfermero;
     }
 

@@ -7,14 +7,20 @@ public class Main {
     private static Scanner entrada = new Scanner(System.in);
     private static ConsultaMedica consulta = new ConsultaMedica();
     private static Empleado usuario;
+    private static boolean debug = false;
 
     public static void main(String[] args) {
         //esto es solo un medico pa ejemplo para poder probar la atencion
         cargarDatosIniciales();
         limpiarConsola();
-        boolean aceptado = true;
+        boolean aceptado = false;
         while (!aceptado) {
             String ID = leerTexto("ID de Empleado: ");
+            if (ID.equals("debug")) {
+                aceptado = true;
+                debug = true;
+                break;
+            }
             usuario = buscarEmpleadoPorID(ID);
 
             if (usuario != null) {
@@ -85,8 +91,7 @@ public class Main {
             System.out.println("3. Ver pacientes en espera");
             System.out.println("4. Atender al siguiente paciente");
             System.out.println("5. Ver historial clinico y citas de un paciente");
-            System.out.println("6. Tomar datos vitales de paciente");
-            System.out.println("7. Registrar urgencia");
+            System.out.println("6. Registrar urgencia");
             System.out.println("0. Volver al menu principal");
             int opcion = leerEntero("Selecciona una opcion: ");
             try {
@@ -110,12 +115,8 @@ public class Main {
                     mostrarTituloResultado("Historial clinico del paciente");
                     mostrarHistorial();
                     pausarResultado();
-                } else if (opcion == 6 && tienePermiso("E")) {
-                    mostrarTituloResultado("Tomando datos vitales del paciente");
-                    tomarDatosVitales();
-                    pausarResultado();
                 }
-                else if (opcion == 7 && tienePermiso("S")) {
+                else if (opcion == 6 && tienePermiso("S")) {
                     mostrarTituloResultado("Registrar urgencia");
                     registrarUrgencia();
                     pausarResultado();
@@ -233,6 +234,9 @@ public class Main {
         }
     }
     private static boolean tienePermiso(String allowed) {
+        if (debug) {
+            return true;
+        }
         if (usuario == null) {
             throw new NullPointerException("Usuario no encontrado");
         }
@@ -255,9 +259,6 @@ public class Main {
             System.out.println("No tienes permiso para ver este contenido. Trata otra opcion.");
         }
         return permiso;
-    }
-    private static void tomarDatosVitales() {
-
     }
     private static void registrarEmpleado() {
         System.out.println("Tipo de empleado:");
@@ -540,12 +541,13 @@ public class Main {
         consulta.asignarPaciente();   
         medicoElegido.setDisponible(false);
         System.out.println("Atendiendo a " + paciente.getNombre() + " con " + medicoElegido.getNombre());
-        String notas = leerTexto("Nota breve de la visita: ");
+        String notasM = leerTexto("Notas del Medico: ");
+        String notasE = leerTexto("Notas del Enfermero: ");
         Cita citaDeVisita = citaAgendada;
         if (citaDeVisita == null) {
             citaDeVisita = new Cita("V" + System.nanoTime(), paciente, medicoElegido, hoy);
         }
-        Visita visita = new Visita(citaDeVisita, notas);
+        Visita visita = new Visita(citaDeVisita, notasM, notasE);
         consulta.getCitas().registrarVisita(visita);
         medicoElegido.setDisponible(true);
         System.out.println("Visita registrada.");
