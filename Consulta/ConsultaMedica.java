@@ -34,6 +34,14 @@ public class ConsultaMedica {
 }
 
 
+    public void registrarUrgencia(String idPaciente, int prioridad) {
+        Paciente p = pacientes.buscarPorId(idPaciente);
+        if (p == null) {
+            throw new IllegalArgumentException("No existe un paciente con ese ID. Regístralo primero.");
+        }
+        pacientes.anadirUrgencia(p, prioridad);
+    }
+
 
     public AdministrarPersonal getPersonal() {
         return personal;

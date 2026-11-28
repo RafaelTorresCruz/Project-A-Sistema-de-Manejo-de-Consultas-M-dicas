@@ -86,6 +86,7 @@ public class Main {
             System.out.println("4. Atender al siguiente paciente");
             System.out.println("5. Ver historial clinico y citas de un paciente");
             System.out.println("6. Tomar datos vitales de paciente");
+            System.out.println("7. Registrar urgencia");
             System.out.println("0. Volver al menu principal");
             int opcion = leerEntero("Selecciona una opcion: ");
             try {
@@ -113,7 +114,13 @@ public class Main {
                     mostrarTituloResultado("Tomando datos vitales del paciente");
                     tomarDatosVitales();
                     pausarResultado();
-                } else if (opcion == 0) {
+                }
+                else if (opcion == 7 && tienePermiso("S")) {
+                    mostrarTituloResultado("Registrar urgencia");
+                    registrarUrgencia();
+                    pausarResultado();
+                }
+                else if (opcion == 0) {
                     limpiarConsola();
                     regresar = true;
                 } else {
@@ -359,6 +366,14 @@ public class Main {
         System.out.println("Paciente añadido a la fila de espera.");
 }
 
+    private static void registrarUrgencia() {
+        String id = leerTexto("ID del paciente: ");
+        int prioridad = leerEntero("Prioridad (1 = baja, 2 = media, 3 = critica): ");
+        consulta.registrarUrgencia(id, prioridad);
+        System.out.println("Paciente añadido a urgencias.");
+    }
+
+
     private static void buscarMedicoPorEspecialidad(){
         Especialidad[] especialidades = Especialidad.values();
         System.out.println("Especialidades:");
@@ -483,7 +498,7 @@ public class Main {
     
 
     private static void atenderSiguiente() {
-        Paciente paciente = consulta.asignarPaciente();
+        Paciente paciente = consulta.getPacientes().verSiguienteParaAtender();
         if (paciente == null) {
             System.out.println("No hay pacientes esperando.");
             return;
@@ -518,11 +533,11 @@ public class Main {
         }
 
         if (medicoElegido == null) {
-            consulta.getPacientes().anadirAFila(paciente);
             System.out.println("No hay medico disponible para este paciente. Sigue en la fila.");
             return;
         }
 
+        consulta.asignarPaciente();   
         medicoElegido.setDisponible(false);
         System.out.println("Atendiendo a " + paciente.getNombre() + " con " + medicoElegido.getNombre());
         String notas = leerTexto("Nota breve de la visita: ");
@@ -542,7 +557,14 @@ public class Main {
         } else {
             for (int i = 0; i < pacientes.size(); i++) {
                 Paciente paciente = pacientes.get(i);
-                System.out.println(paciente.getId() + " - " + paciente.getNombre());
+
+                if(paciente.isEmergencia() ){
+                    System.out.println(paciente.getId() + " - " + paciente.getNombre() + " [URGENCIA prioridad " + paciente.getPrioridad() + "]");
+
+                }
+
+                else {
+                System.out.println(paciente.getId() + " - " + paciente.getNombre());}
             }
         }
     }
