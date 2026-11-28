@@ -8,10 +8,19 @@ import java.util.Queue;
 public class AdministrarPacientes {
     private Map<String, Paciente> pacientes;
     private Queue<Paciente> fila;
+    private Queue<Paciente> urgenciaMax;
+    private Queue<Paciente> urgenciaMid;     
+    private Queue<Paciente> urgenciaLow;
+
 
     public AdministrarPacientes() {
         pacientes = new LinkedHashMap<String, Paciente>();
         fila = new ArrayDeque<Paciente>();
+        urgenciaMax = new ArrayDeque<Paciente>();
+        urgenciaMid = new ArrayDeque<Paciente>();
+        urgenciaLow = new ArrayDeque<Paciente>();
+
+        
     }
 
     public void registrarPaciente(Paciente paciente) {
@@ -57,6 +66,53 @@ public class AdministrarPacientes {
         }
     }
 
+    public void anadirUrgencia(Paciente paciente, int prioridad){
+        if (paciente == null || !pacientes.containsKey(paciente.getId())) {
+            throw new IllegalArgumentException("Registre primero al paciente.");
+        }
+
+        if (prioridad < 1 || prioridad > 3) {
+            throw new IllegalArgumentException("La prioridad debe ser 1, 2 o 3.");
+        }
+
+        if (urgenciaMax.contains(paciente) || urgenciaMid.contains(paciente) || urgenciaLow.contains(paciente)) {
+        throw new IllegalArgumentException("Ese paciente ya está en urgencias.");
+        }
+
+        fila.remove(paciente);
+        paciente.setEmergencia(true, prioridad);
+
+        if (prioridad == 3) {
+        urgenciaMax.add(paciente);
+    } else if (prioridad == 2) {
+        urgenciaMid.add(paciente);
+    } else {
+        urgenciaLow.add(paciente);
+    }
+    }
+
+
+    public Paciente siguienteParaAtender() {
+    Paciente siguiente = null;
+
+    if (!urgenciaMax.isEmpty()) {
+        siguiente = urgenciaMax.remove();
+    } else if (!urgenciaMid.isEmpty()) {
+        siguiente = urgenciaMid.remove();
+    } else if (!urgenciaLow.isEmpty()) {
+        siguiente = urgenciaLow.remove();
+    } else {
+        return siguienteEnFila();
+    }
+
+
+    siguiente.setEmergencia(false, 0);   
+    return siguiente;
+}
+
+
+
+
     public Paciente siguienteEnFila() {
         if (fila.isEmpty()) {
             return null;
@@ -66,8 +122,25 @@ public class AdministrarPacientes {
     }
 
     public List<Paciente> pacientesEnEspera() {
-        return new ArrayList<Paciente>(fila);
+        List<Paciente> resultado = new ArrayList<Paciente>(urgenciaMax);
+        resultado.addAll(urgenciaMid);
+        resultado.addAll(urgenciaLow);
+        resultado.addAll(fila);
+        return resultado;
     }
+
+    public Paciente verSiguienteParaAtender() {
+    if (!urgenciaMax.isEmpty()) {
+        return urgenciaMax.peek();
+    }
+    if (!urgenciaMid.isEmpty()) {
+        return urgenciaMid.peek();
+    }
+    if (!urgenciaLow.isEmpty()) {
+        return urgenciaLow.peek();
+    }
+    return fila.peek();   
+}
 
     public Paciente buscarPorId(String id) {
         return pacientes.get(id);
