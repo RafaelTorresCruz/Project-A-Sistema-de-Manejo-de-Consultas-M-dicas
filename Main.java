@@ -163,7 +163,14 @@ public class Main {
                     mostrarTituloResultado("Citas pendientes");
                     mostrarTodasLasCitas();
                     pausarResultado();
-                } else if (opcion == 5 && tienePermiso("S")) {
+                } 
+                
+                
+                else if (opcion == 6) {
+                    mostrarTituloResultado("Visitas completadas recientemente");
+                    mostrarVisitasRecientes();
+                    pausarResultado();}
+                else if (opcion == 5 && tienePermiso("S")) {
                     mostrarTituloResultado("Cancelar una cita");
                     cancelarCita();
                     pausarResultado();
