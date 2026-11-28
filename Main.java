@@ -167,6 +167,10 @@ public class Main {
                     mostrarTituloResultado("Cancelar una cita");
                     cancelarCita();
                     pausarResultado();
+                } else if (opcion == 6) {
+                    mostrarTituloResultado("Visitas completadas recientemente");
+                    mostrarVisitasRecientes();
+                    pausarResultado();
                 } else if (opcion == 0) {
                     limpiarConsola();
                     regresar = true;
